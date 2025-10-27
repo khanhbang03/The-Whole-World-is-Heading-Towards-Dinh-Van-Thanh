@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The World is Heading Towards Dinh Van Thanh</title>
+<style>
+    body {
+        margin: 0;
+        font-family: 'Arial', sans-serif;
+        height: 100vh;
+        background: radial-gradient(circle at center, #0f2027, #203a43, #2c5364);
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        text-align: center;
+    }
+
+    h1 {
+        font-size: 3em;
+        z-index: 1;
+        position: relative;
+        animation: fadeIn 2s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        0% { opacity: 0; transform: translateY(-20px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .icon {
+        position: absolute;
+        font-size: 2em;
+        pointer-events: none;
+    }
+
+    canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 0;
+    }
+</style>
+</head>
+<body>
+
+<h1>The Whole World is Heading Towards Dinh Van Thanh</h1>
+<canvas id="trailCanvas"></canvas>
+
+<script>
+const icons = ['🌍','🚀','✨','🪐','🌟','🌌'];
+const numIcons = 40;
+const iconsArray = [];
+const canvas = document.getElementById('trailCanvas');
+const ctx = canvas.getContext('2d');
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const colors = ['#ff6b6b','#f7d794','#6a89cc','#78e08f','#e77f67','#f8a5c2'];
+const centerX = canvas.width / 2;
+const centerY = canvas.height / 2;
+
+// Icon setup from random edges
+for (let i = 0; i < numIcons; i++) {
+    const icon = document.createElement('div');
+    icon.classList.add('icon');
+    icon.textContent = icons[Math.floor(Math.random() * icons.length)];
+    document.body.appendChild(icon);
+
+    let startX, startY;
+    const edge = Math.floor(Math.random() * 4);
+    if (edge === 0) { startX = 0; startY = Math.random() * canvas.height; }
+    else if (edge === 1) { startX = canvas.width; startY = Math.random() * canvas.height; }
+    else if (edge === 2) { startX = Math.random() * canvas.width; startY = 0; }
+    else { startX = Math.random() * canvas.width; startY = canvas.height; }
+
+    const angleOffset = Math.random() * Math.PI * 2;
+
+    iconsArray.push({
+        element: icon,
+        x: startX,
+        y: startY,
+        angleOffset: angleOffset,
+        distance: Math.sqrt((centerX-startX)**2 + (centerY-startY)**2),
+        color: colors[Math.floor(Math.random() * colors.length)]
+    });
+}
+
+function animate() {
+    ctx.fillStyle = 'rgba(0,0,0,0.1)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    iconsArray.forEach(iconObj => {
+        // Spiral motion toward center
+        iconObj.distance *= 0.95;
+        const spiralAngle = iconObj.angleOffset + iconObj.distance * 0.05;
+        iconObj.x = centerX + iconObj.distance * Math.cos(spiralAngle);
+        iconObj.y = centerY + iconObj.distance * Math.sin(spiralAngle);
+
+        iconObj.element.style.left = iconObj.x + 'px';
+        iconObj.element.style.top = iconObj.y + 'px';
+
+        // Draw colorful trail
+        ctx.fillStyle = iconObj.color;
+        ctx.font = '20px Arial';
+        ctx.fillText(iconObj.element.textContent, iconObj.x, iconObj.y);
+    });
+
+    requestAnimationFrame(animate);
+}
+
+animate();
+
+window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
+</script>
+
+</body>
+</html>

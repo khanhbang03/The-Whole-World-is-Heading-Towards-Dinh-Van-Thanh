@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The World is Heading Towards Dinh Van Thanh</title>
+<style>
+    body {
+        margin: 0;
+        font-family: 'Arial', sans-serif;
+        height: 100vh;
+        background: radial-gradient(circle at center, #0f2027, #203a43, #2c5364);
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        text-align: center;
+    }
+
+    h1 {
+        font-size: 3em;
+        z-index: 2;
+        position: relative;
+        animation: fadeIn 2s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        0% { opacity: 0; transform: translateY(-20px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+
+    canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+    }
+</style>
+</head>
+<body>
+
+<h1>The Whole World is Heading Towards Dinh Van Thanh</h1>
+<canvas id="trailCanvas"></canvas>
+
+<script>
+const canvas = document.getElementById('trailCanvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const centerX = canvas.width / 2;
+const centerY = canvas.height / 2;
+const colors = ['#ff6b6b','#f7d794','#6a89cc','#78e08f','#e77f67','#f8a5c2','#ffd700','#00ffff'];
+const icons = ['🌍','🚀','✨','🪐','🌟','🌌','💫','🌙'];
+
+const numIcons = 100; // high particle density
+const iconsArray = [];
+
+// Initialize icons from random edges
+for (let i = 0; i < numIcons; i++) {
+    const edge = Math.floor(Math.random() * 4);
+    let x, y;
+    if(edge === 0){ x = 0; y = Math.random() * canvas.height; }
+    else if(edge === 1){ x = canvas.width; y = Math.random() * canvas.height; }
+    else if(edge === 2){ x = Math.random() * canvas.width; y = 0; }
+    else{ x = Math.random() * canvas.width; y = canvas.height; }
+
+    iconsArray.push({
+        x: x,
+        y: y,
+        distance: Math.sqrt((centerX-x)**2 + (centerY-y)**2),
+        angleOffset: Math.random() * Math.PI*2,
+        color: colors[Math.floor(Math.random()*colors.length)],
+        icon: icons[Math.floor(Math.random()*icons.length)]
+    });
+}
+
+// Draw starfield background
+const stars = Array.from({length:200}, () => ({
+    x: Math.random()*canvas.width,
+    y: Math.random()*canvas.height,
+    r: Math.random()*1.5+0.5
+}));
+
+function animate() {
+    // Fade canvas for trail effect
+    ctx.fillStyle = 'rgba(0,0,0,0.2)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Draw stars
+    ctx.fillStyle = 'white';
+    stars.forEach(star => {
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.r, 0, Math.PI*2);
+        ctx.fill();
+    });
+
+    // Animate icons spiraling to center
+    iconsArray.forEach(iconObj => {
+        iconObj.distance *= 0.95;
+        const spiralAngle = iconObj.angleOffset + iconObj.distance*0.05;
+        iconObj.x = centerX + iconObj.distance * Math.cos(spiralAngle);
+        iconObj.y = centerY + iconObj.distance * Math.sin(spiralAngle);
+
+        ctx.fillStyle = iconObj.color;
+        ctx.font = '24px Arial';
+        ctx.fillText(iconObj.icon, iconObj.x, iconObj.y);
+    });
+
+    requestAnimationFrame(animate);
+}
+
+animate();
+
+window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
+</script>
+
+</body>
+</html>

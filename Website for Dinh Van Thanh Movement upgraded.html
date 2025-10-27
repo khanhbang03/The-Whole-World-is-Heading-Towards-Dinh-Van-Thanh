@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The World is Heading Towards Dinh Van Thanh</title>
+<style>
+    body {
+        margin: 0;
+        font-family: 'Arial', sans-serif;
+        height: 100vh;
+        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        text-align: center;
+    }
+
+    h1 {
+        font-size: 3em;
+        z-index: 1;
+        position: relative;
+        animation: fadeIn 2s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        0% { opacity: 0; transform: translateY(-20px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .icon {
+        position: absolute;
+        font-size: 2em;
+        pointer-events: none;
+    }
+
+    canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 0;
+    }
+</style>
+</head>
+<body>
+
+<h1>The Whole World is Heading Towards Dinh Van Thanh</h1>
+<canvas id="trailCanvas"></canvas>
+
+<script>
+    const icons = ['🌍','🚀','✨','🪐','🌟','🌌'];
+    const numIcons = 30;
+    const iconsArray = [];
+    const canvas = document.getElementById('trailCanvas');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Colors for trails
+    const colors = ['#ff6b6b','#f7d794','#6a89cc','#78e08f','#e77f67','#f8a5c2'];
+
+    // Icon setup
+    for (let i = 0; i < numIcons; i++) {
+        const icon = document.createElement('div');
+        icon.classList.add('icon');
+        icon.textContent = icons[Math.floor(Math.random() * icons.length)];
+        document.body.appendChild(icon);
+
+        iconsArray.push({
+            element: icon,
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            color: colors[Math.floor(Math.random() * colors.length)]
+        });
+    }
+
+    const targetX = canvas.width / 2;
+    const targetY = canvas.height / 2;
+
+    function animate() {
+        // Semi-transparent background for fading trails
+        ctx.fillStyle = 'rgba(0,0,0,0.1)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        iconsArray.forEach(iconObj => {
+            // Calculate distance to center
+            const dx = targetX - iconObj.x;
+            const dy = targetY - iconObj.y;
+            const distance = Math.sqrt(dx*dx + dy*dy);
+
+            // Accelerate as it gets closer
+            const speed = Math.min(0.05 + distance / 500, 0.2);
+            iconObj.x += dx * speed;
+            iconObj.y += dy * speed;
+
+            iconObj.element.style.left = iconObj.x + 'px';
+            iconObj.element.style.top = iconObj.y + 'px';
+
+            // Draw colorful trail
+            ctx.fillStyle = iconObj.color;
+            ctx.font = '20px Arial';
+            ctx.fillText(iconObj.element.textContent, iconObj.x, iconObj.y);
+        });
+
+        requestAnimationFrame(animate);
+    }
+
+    animate();
+
+    // Resize handling
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    });
+</script>
+
+</body>
+</html>
